@@ -27,6 +27,9 @@ class Commenter:
         command_example = Table.cmd_description.get(key) 
         address_type = byte_command[1]
 
+        if byte_command[0] == "F":
+            return Table.cmd_description.get(key) + " (прямая относительная)"
+
         if int(address_type, 16) < 8:
             return Table.cmd_description.get(key) + " (абсолютная адресация)"
 

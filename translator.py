@@ -10,17 +10,30 @@ class Translator:
 
         if not(command is None):
             return command
+            
 
         for key in Table.opcode_dict.keys():
             if key.count("X") == 0:
                 continue
-
             if byte_command[0:2] == key[0:2]:
-                return self.handle_command_with_two_x(key)
+                if key[0] == "F":
+                    return self.handle_jump_command(byte_command, key)
+                else:
+                    return self.handle_command_with_two_x(key)
+        
+        for key in Table.opcode_dict.keys():
+            if key.count("X") == 0:
+                continue
             elif byte_command[0] == key[0]:
                 return self.handle_command_with_three_x(byte_command, key)
+            
         print(f"Ошибка в команде {byte_command}, не найдена, замена на WORD 0x{byte_command}!")
         return f"WORD 0x{byte_command}"
+
+    @staticmethod
+    def handle_jump_command(byte_command: str, key: str) -> str:
+        command_example = Table.opcode_dict.get(key) 
+        return command_example.split(" ")[0] + f" {Translator.hex_to_signed_byte(byte_command[2:])}"
 
     @staticmethod
     def hex_to_signed_byte(hex_str: str) -> str:
