@@ -7,8 +7,10 @@ class Saver:
         self.comments = comments
         self.byte_lines = byte_lines
     
-    def save(self) -> None:
+    def save(self, input_filename: str) -> None:
         try:
+            output_filename = input_filename + ".xlsx" if not("." in input_filename) else ".".join(input_filename.split(".")[:-1]) + ".xlsx"
+
             wb = Workbook()
             ws = wb.active
             ws.title = "Табличка БЭВМ"
@@ -17,7 +19,7 @@ class Saver:
             for i in range(len(self.code)):
                 ws.append([hex(self.start_pos + i)[2:].upper(), self.byte_lines[i], self.code[i], self.comments[i]])
             
-            wb.save("asm_code.xlsx")
-            print("Файл 'asm_code.xlsx' успешно сохранен")
+            wb.save(output_filename)
+            print(f"Файл {output_filename} успешно сохранен")
         except Exception as exp:
             print(f"Ошибка во время записи в excel: {exp}")
